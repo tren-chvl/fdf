@@ -1,29 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fdf.c                                              :+:      :+:    :+:   */
+/*   ft_hexa_unsigned.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: marcheva <marcheva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/08 20:31:18 by marcheva          #+#    #+#             */
-/*   Updated: 2025/11/10 15:05:38 by marcheva         ###   ########.fr       */
+/*   Created: 2025/10/22 09:19:27 by marcheva          #+#    #+#             */
+/*   Updated: 2025/11/10 13:26:38 by marcheva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fdf.h"
-#include "minilibx-linux/mlx.h"
+#include "../fdf.h"
 
-int main(int argc, char **argv)
+int	ft_hexa_unsigned(unsigned int nb, int uppercase)
 {
-	t_map *map;
+	int		count;
+	char	tab;
+	char	*base;
 
-	if (argc != 2)
-		return (1);
-	map = read_fdf(argv[1]);
-	if (!map)
-		return (1);
-	init_mlx_and_draw(map); // Création fenêtre + rendu + hooks
-	free_map(map);          // Libération mémoire à la fin
-	return (0);
+	count = 0;
+	if (!uppercase)
+		base = "0123456789abcdef";
+	else
+		base = "0123456789ABCDEF";
+	if (nb >= 16)
+		count += ft_hexa_unsigned(nb / 16, uppercase);
+	tab = base[nb % 16];
+	count += write(1, &tab, 1);
+	return (count);
 }
-

@@ -1,29 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fdf.c                                              :+:      :+:    :+:   */
+/*   ft_auxilliere2.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: marcheva <marcheva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/08 20:31:18 by marcheva          #+#    #+#             */
-/*   Updated: 2025/11/10 15:05:38 by marcheva         ###   ########.fr       */
+/*   Created: 2025/10/22 09:18:20 by marcheva          #+#    #+#             */
+/*   Updated: 2025/11/10 13:26:36 by marcheva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fdf.h"
-#include "minilibx-linux/mlx.h"
+#include "../fdf.h"
 
-int main(int argc, char **argv)
+int	pourcentage_addr(va_list args)
 {
-	t_map *map;
+	void	*ptr;
 
-	if (argc != 2)
-		return (1);
-	map = read_fdf(argv[1]);
-	if (!map)
-		return (1);
-	init_mlx_and_draw(map); // Création fenêtre + rendu + hooks
-	free_map(map);          // Libération mémoire à la fin
-	return (0);
+	ptr = va_arg(args, void *);
+	if (!ptr)
+		return (ft_putstr("(nil)"));
+	return (ft_addr(ptr));
 }
 
+int	pourcentage_x(va_list args, int uppercase)
+{
+	unsigned int	nb;
+
+	nb = va_arg(args, unsigned int);
+	return (ft_hexa_unsigned(nb, uppercase));
+}

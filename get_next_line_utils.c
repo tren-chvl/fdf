@@ -6,11 +6,11 @@
 /*   By: marcheva <marcheva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 13:03:47 by marcheva          #+#    #+#             */
-/*   Updated: 2025/10/22 14:54:26 by marcheva         ###   ########.fr       */
+/*   Updated: 2025/11/10 09:32:50 by marcheva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "fdf.h"
 
 size_t	ft_strlen_g(char *line)
 {

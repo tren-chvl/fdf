@@ -1,29 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fdf.c                                              :+:      :+:    :+:   */
+/*   ft_put.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: marcheva <marcheva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/08 20:31:18 by marcheva          #+#    #+#             */
-/*   Updated: 2025/11/10 15:05:38 by marcheva         ###   ########.fr       */
+/*   Created: 2025/10/22 09:26:39 by marcheva          #+#    #+#             */
+/*   Updated: 2025/11/10 13:26:44 by marcheva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fdf.h"
-#include "minilibx-linux/mlx.h"
+#include "../fdf.h"
 
-int main(int argc, char **argv)
+int	ft_put(unsigned int nb)
 {
-	t_map *map;
+	int		count;
+	char	c;
 
-	if (argc != 2)
-		return (1);
-	map = read_fdf(argv[1]);
-	if (!map)
-		return (1);
-	init_mlx_and_draw(map); // Création fenêtre + rendu + hooks
-	free_map(map);          // Libération mémoire à la fin
-	return (0);
+	count = 0;
+	if (nb > 9)
+		count += ft_put(nb / 10);
+	c = '0' + (nb % 10);
+	count += write(1, &c, 1);
+	return (count);
 }
 
+int	pourcentage_u(va_list args)
+{
+	unsigned int	u;
+
+	u = va_arg(args, unsigned int);
+	return (ft_put(u));
+}

@@ -1,29 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fdf.c                                              :+:      :+:    :+:   */
+/*   ft_putnbr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: marcheva <marcheva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/08 20:31:18 by marcheva          #+#    #+#             */
-/*   Updated: 2025/11/10 15:05:38 by marcheva         ###   ########.fr       */
+/*   Created: 2025/10/22 09:27:13 by marcheva          #+#    #+#             */
+/*   Updated: 2025/11/10 13:26:46 by marcheva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fdf.h"
-#include "minilibx-linux/mlx.h"
+#include "../fdf.h"
 
-int main(int argc, char **argv)
+int	ft_putnbr(int nb)
 {
-	t_map *map;
+	int		count;
+	char	c;
 
-	if (argc != 2)
-		return (1);
-	map = read_fdf(argv[1]);
-	if (!map)
-		return (1);
-	init_mlx_and_draw(map); // Création fenêtre + rendu + hooks
-	free_map(map);          // Libération mémoire à la fin
-	return (0);
+	count = 0;
+	if (nb == -2147483648)
+	{
+		count = count + write(1, "-2147483648", 11);
+		return (count);
+	}
+	if (nb < 0)
+	{
+		count = count + write(1, "-", 1);
+		nb = -nb;
+	}
+	if (nb > 9)
+	{
+		count = count + ft_putnbr(nb / 10);
+	}
+	c = '0' + (nb % 10);
+	count = count + write(1, &c, 1);
+	return (count);
 }
-
