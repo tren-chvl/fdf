@@ -6,7 +6,7 @@
 /*   By: marcheva <marcheva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/08 20:31:40 by marcheva          #+#    #+#             */
-/*   Updated: 2025/11/10 13:25:10 by marcheva         ###   ########.fr       */
+/*   Updated: 2025/11/12 16:38:28 by marcheva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 # include <unistd.h>
 # include <stdarg.h>
 # include <math.h>
-#include "minilibx-linux/mlx.h"
+# include "minilibx-linux/mlx.h"
 
 typedef struct s_point
 {
@@ -91,5 +91,7 @@ int	alloc_points(t_map *map);
 void free_map(t_map *map);
 t_map	*init_map(char *file, t_map *map);
 void	full_map(t_map *map, char *file);
+void	init_mlx(t_data *data, int col, int ligne);
+void init_mlx_and_draw(t_map *map);
 
 #endif

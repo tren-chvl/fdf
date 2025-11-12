@@ -6,12 +6,11 @@
 /*   By: marcheva <marcheva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/08 20:31:18 by marcheva          #+#    #+#             */
-/*   Updated: 2025/11/10 15:05:38 by marcheva         ###   ########.fr       */
+/*   Updated: 2025/11/12 16:34:26 by marcheva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
-#include "minilibx-linux/mlx.h"
 
 int main(int argc, char **argv)
 {
@@ -22,8 +21,9 @@ int main(int argc, char **argv)
 	map = read_fdf(argv[1]);
 	if (!map)
 		return (1);
-	init_mlx_and_draw(map); // Création fenêtre + rendu + hooks
-	free_map(map);          // Libération mémoire à la fin
+	full_map(map,argv[1]);
+	init_mlx_and_draw(map);
+	free_map(map);
 	return (0);
 }
 

@@ -19,7 +19,7 @@ OBJS = $(SRCS:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC)  $(CFLAGS) $(OBJS) -o $(NAME) minilibx-linux/libmlx.a -lX11 -lXext -lm -lbsd
+	$(CC) $(CFLAGS)$(SRCS) -lXext -Lminilibx-linux -lmlx_Linux -Iminilibx-linux -lX11 -lm -lz -o $(NAME)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -33,3 +33,5 @@ fclean: clean
 re: fclean all
 
 .PHONY : all clean fclean re
+
+
