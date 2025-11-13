@@ -1,68 +1,183 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ft_minilbx.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: marcheva <marcheva@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/08 20:31:40 by marcheva          #+#    #+#             */
-/*   Updated: 2025/11/12 16:54:25 by marcheva         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+#include "fdf.h"
+
+void put_pixel(t_data *d, int x, int y, int color)
+{
+    char *dst;
+
+    if (x < 0 || x >= d->win_width || y < 0 || y >= d->win_height)
+        return ;
+    dst = d->addr + (y * d->line_len + x * (d->bpp / 8));
+    *(unsigned int *)dst = color;
+}
+
+int get_color(t_point p)
+{
+    return (p.color);
+}
+
+t_coord project_iso(t_point p, t_data *d, float scale, float off_x, float off_y)
+{
+    t_coord result;
+    float   angle;
+    float   x;
+    float   y;
+    float   z;
+
+    angle = -0.488692;
+    x = p.x * scale;
+    y = p.y * scale;
+    z = p.z * d->z_scale * scale;
+    result.x = (x + y) * cos(angle) + off_x;
+    result.y = (x - y) * sin(angle) - z + off_y;
+
+    return (result);
+}
+
+
+void update_minmax(t_coord tmp, float *min_x, float *max_x,
+        float *min_y, float *max_y)
+{
+    if (tmp.x < *min_x)
+        *min_x = tmp.x;
+    if (tmp.x > *max_x)
+        *max_x = tmp.x;
+    if (tmp.y < *min_y)
+        *min_y = tmp.y;
+    if (tmp.y > *max_y)
+        *max_y = tmp.y;
+}
+void    compute_scale_offset(t_data *d)
+{
+    int     i;
+    int     j;
+    t_coord tmp;
+    float   min_x;
+    float   max_x;
+    float   min_y;
+    float   max_y;
+
+    min_x = 1e9;
+    max_x = -1e9;
+    min_y = 1e9;
+    max_y = -1e9;
+    i = 0;
+    while (i < d->map->line)
+    {
+        j = 0;
+        while (j < d->map->col)
+        {
+            tmp = project_iso(d->map->points[i][j], d, 1, 0, 0);
+            if (tmp.x < min_x) min_x = tmp.x;
+            if (tmp.x > max_x) max_x = tmp.x;
+            if (tmp.y < min_y) min_y = tmp.y;
+            if (tmp.y > max_y) max_y = tmp.y;
+            j++;
+        }
+        i++;
+    }
+    d->scale = fmin((d->win_width - 40) / (max_x - min_x),
+            (d->win_height - 40) / (max_y - min_y));
+    d->offset_x = (d->win_width - (max_x - min_x) * d->scale) / 2 - min_x * d->scale;
+    d->offset_y = (d->win_height - (max_y - min_y) * d->scale) / 2 - min_y * d->scale;
+
+    d->offset_x -= 20; 
+    
+}
+
+
+
+void    compute_z_range(t_data *d)
+{
+    int i;
+    int j;
+
+    d->z_min = 1000000;
+    d->z_max = -1000000;
+    i = 0;
+    while (i < d->map->line)
+    {
+        j = 0;
+        while (j < d->map->col)
+        {
+            if (d->map->points[i][j].z < d->z_min)
+                d->z_min = d->map->points[i][j].z;
+            if (d->map->points[i][j].z > d->z_max)
+                d->z_max = d->map->points[i][j].z;
+            j++;
+        }
+        i++;
+    }
+    d->z_scale = 0.2;
+}
+
+
 
 #include "fdf.h"
 
-void	init_mlx(t_data *data, int col, int ligne)
+void destroy_and_quit(t_data *d, int code)
 {
-	data->mlx = mlx_init();
-	data->win = mlx_new_window(data->mlx, col, ligne, "FDF");
-	data->img = mlx_new_image(data->mlx, col, ligne);
-	data->addr = mlx_get_data_addr(data->img, &data->bpp,
-			&data->line_len, &data->endian);
+    if (d->img)
+        mlx_destroy_image(d->mlx, d->img);
+    if (d->win)
+        mlx_destroy_window(d->mlx, d->win);
+# ifndef __APPLE__
+    if (d->mlx)
+        mlx_destroy_display(d->mlx);
+# endif
+    if (d->mlx)
+        free(d->mlx);
+    if (d->map)
+        free_map(d->map);
+    exit(code);
 }
 
-void	draw(t_data *data, int x, int y, int color)
+int on_key(int key, t_data *d)
 {
-	char	*draw;
-
-	draw = data->addr + (y * data->line_len + x * (data->bpp / 8));
-	*(unsigned int*)draw = color;
-}
-t_coord project_iso(int x, int y, int z)
-{
-	t_coord p;
-	float angle;
-
-	angle = 0.523599;
-
-	p.x = (x - y) * cos(angle);
-	p.y = (x + y) * sin(angle) - z;
-
-	return (p);
+    if (key == 65307 || key == 53) // ESC Linux/Mac
+        destroy_and_quit(d, 0);
+    return (0);
 }
 
-void init_mlx_and_draw(t_map *map)
+int on_close(t_data *d)
 {
-	t_data data;
-	t_coord coord;
-	t_point point3d;
-	int i;
-	int j;
-
-	i = 0;
-	init_mlx(&data,  800, 600);
-	while (i < map->line)
-	{
-		j = 0;
-		while (j < map->col)
-		{
-			point3d = map->points[i][j];
-			coord = project_iso(point3d.x,point3d.y ,point3d.z);
-			draw(&data,coord.x,coord.y,0xFFFFFF);
-			j++;
-		}
-		i++;
-	}
-	mlx_put_image_to_window(data.mlx,data.win,data.img,0,0);
-	mlx_loop(data.mlx);
+    destroy_and_quit(d, 0);
+    return (0);
 }
+
+void    init_mlx_and_draw(t_map *map)
+{
+    t_data  d;
+
+    d.map = map;
+    d.win_width = 1200;
+    d.win_height = 800;
+    d.mlx = mlx_init();
+    d.win = mlx_new_window(d.mlx, d.win_width, d.win_height, "FDF");
+    d.img = mlx_new_image(d.mlx, d.win_width, d.win_height);
+    d.addr = mlx_get_data_addr(d.img, &d.bpp, &d.line_len, &d.endian);
+    compute_scale_offset(&d);
+    compute_z_range(&d);
+    draw_map_lines(&d);
+    mlx_put_image_to_window(d.mlx, d.win, d.img, 0, 0);
+    mlx_key_hook(d.win, on_key, &d);
+    mlx_hook(d.win, 17, 0, on_close, &d);
+    mlx_loop(d.mlx);
+}
+
+// void	init_mlx_and_draw(t_map *map)
+// {
+// 	t_data	d;
+
+// 	d.map = map;
+// 	d.win_width = 1200;
+// 	d.win_height = 800;
+// 	d.mlx = mlx_init();
+// 	d.win = mlx_new_window(d.mlx, d.win_width, d.win_height, "FDF");
+// 	d.img = mlx_new_image(d.mlx, d.win_width, d.win_height);
+// 	d.addr = mlx_get_data_addr(d.img, &d.bpp, &d.line_len, &d.endian);
+// 	compute_scale_offset(&d);
+// 	compute_z_range(&d);
+// 	draw_map_lines(&d);
+// 	mlx_put_image_to_window(d.mlx, d.win, d.img, 0, 0);
+// 	mlx_loop(d.mlx);
+// }

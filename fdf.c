@@ -12,18 +12,22 @@
 
 #include "fdf.h"
 
+
 int main(int argc, char **argv)
 {
-	t_map *map;
+    t_map *map;
 
-	if (argc != 2)
-		return (1);
-	map = read_fdf(argv[1]);
-	if (!map)
-		return (1);
-	full_map(map,argv[1]);
-	init_mlx_and_draw(map);
-	free_map(map);
-	return (0);
+    if (argc != 2)
+        return 1;
+    map = read_fdf(argv[1]);
+    if (!map)
+        return 1;
+    init_mlx_and_draw(map);
+    free_map(map);
+    return 0;
 }
+
+
+
+
 

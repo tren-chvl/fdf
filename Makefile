@@ -2,6 +2,9 @@ NAME = fdf
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
 SRCS =	fdf.c \
+		debug.c \
+		ft_minilbx.c \
+		ft_draw.c \
 		read_fdf.c \
 		ft_split.c \
 		ft_utils.c \
@@ -16,13 +19,18 @@ SRCS =	fdf.c \
 		ft_printf/ft_putnbr.c \
 		ft_printf/ft_putstr.c 
 OBJS = $(SRCS:.c=.o)
+
+MLX_FLAGS = -Lminilibx-linux -lmlx_Linux -lXext -lX11 -lm
+INCLUDE = -Iminilibx-linux
+
 all: $(NAME)
 
+
 $(NAME): $(OBJS)
-	$(CC) $(CFLAGS)$(SRCS) -lXext -Lminilibx-linux -lmlx_Linux -Iminilibx-linux -lX11 -lm -lz -o $(NAME)
+	$(CC) $(CFLAGS) $(INCLUDE) $(OBJS) $(MLX_FLAGS) -o $(NAME)
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
 
 clean:
 	rm -f $(OBJS)
