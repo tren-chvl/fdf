@@ -6,7 +6,7 @@
 /*   By: marcheva <marcheva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/14 09:53:13 by marcheva          #+#    #+#             */
-/*   Updated: 2025/11/14 12:38:06 by marcheva         ###   ########.fr       */
+/*   Updated: 2025/11/15 20:36:40 by marcheva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,14 @@
 
 void	put_pixel(t_data *d, int x, int y, int color)
 {
-	char	*dst;
+	unsigned int	*dst;
 
+	if (!d || !d->addr || d->bpp <= 0 || d->line_len <= 0)
+		return ;
 	if (x < 0 || x >= d->win_width || y < 0 || y >= d->win_height)
 		return ;
-	dst = d->addr + (y * d->line_len + x * (d->bpp / 8));
-	*(unsigned int *)dst = color;
+	dst = (unsigned int *)(d->addr + y * d->line_len + x * (d->bpp / 8));
+	*dst = (unsigned int)color;
 }
 
 int	get_color(t_point p)

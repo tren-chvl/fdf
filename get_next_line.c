@@ -6,7 +6,7 @@
 /*   By: marcheva <marcheva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 11:26:35 by marcheva          #+#    #+#             */
-/*   Updated: 2025/11/14 10:29:31 by marcheva         ###   ########.fr       */
+/*   Updated: 2025/11/15 20:33:49 by marcheva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,7 @@ char	*clean_line(char *line)
 	while (line[i] && line[i] != '\n')
 		i++;
 	if (!line[i])
-	{
-		free(line);
-		return (NULL);
-	}
+		return (free_return(line, NULL));
 	i++;
 	str = malloc(sizeof(char) * (ft_strlen_g(line + i) + 1));
 	if (!str)
@@ -37,6 +34,8 @@ char	*clean_line(char *line)
 		str[j++] = line[i++];
 	str[j] = '\0';
 	free(line);
+	if (str[0] == '\0')
+		return (free_return(str, NULL));
 	return (str);
 }
 
@@ -103,7 +102,14 @@ char	*get_next_line(int fd)
 		return (NULL);
 	line = read_newline(fd, line);
 	if (!line)
+	{
+		if (line)
+		{
+			free(line);
+			line = NULL;
+		}
 		return (NULL);
+	}
 	str = extract_line(line);
 	tmp = clean_line(line);
 	line = tmp;

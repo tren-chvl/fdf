@@ -6,74 +6,45 @@
 /*   By: marcheva <marcheva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 09:11:53 by marcheva          #+#    #+#             */
-/*   Updated: 2025/11/14 10:26:50 by marcheva         ###   ########.fr       */
+/*   Updated: 2025/11/15 20:06:26 by marcheva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-void	full_map2(t_map *map, int i, char **number)
+void	fill_col(t_map *map, int i, int start_j)
+{
+	while (start_j < map->col)
+	{
+		map->points[i][start_j].x = start_j;
+		map->points[i][start_j].y = i;
+		map->points[i][start_j].z = 0;
+		map->points[i][start_j].color = 0xFFFFFF;
+		start_j++;
+	}
+}
+
+void	full_map_line(t_map *map, int i, char **number)
 {
 	int		j;
 	char	**split;
 
 	j = 0;
-	while (j < map->col && number[j])
+	while (j < map->col)
 	{
+		if (!number || !number[j])
+			break ;
 		split = ft_split(number[j], ',');
+		if (!split)
+			break ;
 		map->points[i][j].x = j;
 		map->points[i][j].y = i;
 		map->points[i][j].z = ft_atoi(split[0]);
-		if (split[1])
-			map->points[i][j].color = ft_atoi_base(split[1] + 2, 16);
-		else
-			map->points[i][j].color = 0xFFFFFF;
+		map->points[i][j].color = parse_color(split[1]);
 		free_number(split);
 		j++;
 	}
-}
-
-void	free_number(char **number)
-{
-	int	i;
-
-	i = 0;
-	if (!number)
-		return ;
-	while (number[i])
-	{
-		free(number[i]);
-		i++;
-	}
-	free(number);
-}
-
-void	full_map(t_map *map, char *file)
-{
-	int		fd;
-	int		i;
-	char	*line;
-	char	**number;
-
-	fd = open(file, O_RDONLY);
-	if (fd < 0)
-		return ;
-	i = 0;
-	while (i < map->line)
-	{
-		line = get_next_line(fd);
-		if (!line)
-			break ;
-		number = ft_split(line, ' ');
-		if (number)
-		{
-			full_map2(map, i, number);
-			free_number(number);
-		}
-		free(line);
-		i++;
-	}
-	close(fd);
+	fill_col(map, i, j);
 }
 
 int	alloc_points(t_map *map)
@@ -89,13 +60,10 @@ int	alloc_points(t_map *map)
 		map->points[i] = malloc(sizeof(t_point) * map->col);
 		if (!map->points[i])
 		{
-			i--;
-			while (i >= 0)
-			{
+			while (--i >= 0)
 				free(map->points[i]);
-				i--;
-			}
 			free(map->points);
+			map->points = NULL;
 			return (0);
 		}
 		i++;
@@ -103,30 +71,40 @@ int	alloc_points(t_map *map)
 	return (1);
 }
 
-t_map	*read_fdf(char *file)
+void	process_line(t_map *map, int i, char *line)
 {
-	char	*line;
-	t_map	*map;
+	char	**number;
+
+	number = ft_split(line, ' ');
+	if (number)
+	{
+		full_map_line(map, i, number);
+		free_number(number);
+	}
+	else
+		fill_col(map, i, 0);
+	free(line);
+}
+
+void	full_map(t_map *map, char *file)
+{
 	int		fd;
+	int		i;
+	char	*line;
 
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
-		return (NULL);
-	map = malloc(sizeof(t_map));
-	if (!map)
-		return (close(fd), NULL);
-	map->col = 0;
-	map->line = 0;
-	map->points = NULL;
-	line = get_next_line(fd);
-	while (line)
+		return ;
+	i = 0;
+	while (i < map->line)
 	{
-		if (map->line == 0)
-			map->col = count_word(line, ' ');
-		map->line++;
-		free(line);
 		line = get_next_line(fd);
+		if (!line)
+			break ;
+		process_line(map, i, line);
+		i++;
 	}
+	while (i < map->line)
+		fill_col(map, i++, 0);
 	close(fd);
-	return (init_map(file, map));
 }

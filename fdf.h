@@ -6,7 +6,7 @@
 /*   By: marcheva <marcheva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/14 12:39:39 by marcheva          #+#    #+#             */
-/*   Updated: 2025/11/14 14:04:08 by marcheva         ###   ########.fr       */
+/*   Updated: 2025/11/15 21:03:14 by marcheva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,13 +89,14 @@ t_map	*read_fdf(char *file);
 t_map	*init_map(char *file, t_map *map);
 int		alloc_points(t_map *map);
 void	full_map(t_map *map, char *file);
-void	full_map2(t_map *map, int i, char **number);
 void	free_number(char **number);
 void	free_map(t_map *map);
+void	fill_col(t_map *map, int i, int start_j);
+void	full_map_line(t_map *map, int i, char **number);
+void	process_line(t_map *map, int i, char *line);
 
 int		get_color(t_point p);
 void	put_pixel(t_data *d, int x, int y, int color);
-t_coord	priso_base(t_point p, t_data *d);
 t_coord	priso(t_point p, t_data *d);
 void	draw_line(t_data *data, t_coord a, t_coord b, int color);
 void	draw_horizontal(t_data *d, int i, int j);
@@ -108,6 +109,8 @@ void	destroy_and_quit(t_data *d, int code);
 void	init_mlx_and_draw(t_map *map);
 int		on_key(int key, t_data *d);
 int		on_close(t_data *d);
+int		parse_color(char *s);
+void	free_number(char **number);
 
 char	*get_next_line(int fd);
 char	*read_newline(int fd, char *line);

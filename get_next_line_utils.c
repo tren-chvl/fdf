@@ -6,7 +6,7 @@
 /*   By: marcheva <marcheva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 13:03:47 by marcheva          #+#    #+#             */
-/*   Updated: 2025/11/10 09:32:50 by marcheva         ###   ########.fr       */
+/*   Updated: 2025/11/15 20:34:38 by marcheva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,7 @@ char	*ft_strchr(char *s, int c)
 	while (*s)
 	{
 		if (*s == (char)c)
-		{
 			return ((char *)s);
-		}
 		s++;
 	}
 	return (NULL);

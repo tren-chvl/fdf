@@ -6,7 +6,7 @@
 /*   By: marcheva <marcheva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 11:16:42 by marcheva          #+#    #+#             */
-/*   Updated: 2025/11/14 10:31:58 by marcheva         ###   ########.fr       */
+/*   Updated: 2025/11/15 21:22:14 by marcheva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,14 +45,16 @@ void	free_map(t_map *map)
 
 	if (!map)
 		return ;
-	i = 0;
-	while (i < map->line)
+	if (map->points)
 	{
-		if (map->points[i])
+		i = 0;
+		while (i < map->line)
+		{
 			free(map->points[i]);
-		i++;
+			i++;
+		}
+		free(map->points);
 	}
-	free(map->points);
 	free(map);
 }
 
@@ -83,4 +85,28 @@ int	ft_atoi_base(const char *str, int base)
 		i++;
 	}
 	return (result);
+}
+
+int	parse_color(char *s)
+{
+	if (!s || !*s)
+		return (0xFFFFFF);
+	if ((s[0] == '0') && (s[1] == 'x' || s[1] == 'X'))
+		return (ft_atoi_base(s + 2, 16));
+	return (ft_atoi_base(s, 16));
+}
+
+void	free_number(char **number)
+{
+	int	i;
+
+	if (!number)
+		return ;
+	i = 0;
+	while (number[i])
+	{
+		free(number[i]);
+		i++;
+	}
+	free(number);
 }
