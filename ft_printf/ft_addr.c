@@ -6,7 +6,7 @@
 /*   By: marcheva <marcheva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 09:13:00 by marcheva          #+#    #+#             */
-/*   Updated: 2025/11/10 13:26:10 by marcheva         ###   ########.fr       */
+/*   Updated: 2025/11/14 14:04:44 by marcheva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	ft_convert(unsigned long str)
 {
 	char	tab;
-	int		count; 
+	int		count;
 
 	count = 0;
 	if (str >= 16)

@@ -2,8 +2,8 @@ NAME = fdf
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
 SRCS =	fdf.c \
-		debug.c \
 		ft_minilbx.c \
+		ft_minilbx2.c \
 		ft_draw.c \
 		read_fdf.c \
 		ft_split.c \

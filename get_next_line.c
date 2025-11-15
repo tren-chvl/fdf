@@ -6,7 +6,7 @@
 /*   By: marcheva <marcheva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 11:26:35 by marcheva          #+#    #+#             */
-/*   Updated: 2025/11/10 13:27:26 by marcheva         ###   ########.fr       */
+/*   Updated: 2025/11/14 10:29:31 by marcheva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,25 +109,3 @@ char	*get_next_line(int fd)
 	line = tmp;
 	return (str);
 }
-
-// #include <stdio.h>
-// int main(void)
-// {
-// 	int fd;
-// 	char *line;
-// 	fd = open("vide", O_RDONLY);
-// 	if (fd < 0)
-// 		return (1);
-// 	line = get_next_line(fd);
-// 	while (line)
-// 	{
-// 		printf("%s", line);
-// 		free(line);
-// 		line = get_next_line(fd);
-// 	}
-// 	close(fd);
-// 	return (0);
-// }
-
-
-  
